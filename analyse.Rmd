@@ -26,15 +26,23 @@ summary(df)
 
 ```{r}
 plot(df$survived~df$sex, col=c("orange","lightgreen"))
+
+```
+
+**Interprétation :** Les femmes ont beaucoup plus survécu que les hommes : environ 73 % contre 19 %. Ce résultat reflète la règle « les femmes et les enfants d’abord » appliquée lors de l’évacuation.
+
+```{r}
 plot(df$survived~df$passengerClass)
 ```
 
 
+**Interprétation :** La survie diminue avec la classe : environ 62 % en 1re classe, 43 % en 2e et seulement 25 % en 3e. Les passagers de 1re classe avaient sans doute un accès plus facile aux canots de sauvetage
 
 ```{r}
 plot(df$age~df$survived)
 ```
 
+**Interprétation :** L’âge est très semblable chez les survivants et les non-survivants (médiane d’environ 28 ans dans les deux groupes). À lui seul, l’âge ne semble pas lié à la survie. Ce graphique exclut les 263 passagers dont l’âge est inconnu
 #### Tracés avec ggplot2
 
 Documentation:https://github.com/rstudio/cheatsheets/blob/main/data-visualization.pdf
@@ -47,12 +55,16 @@ ggplot(df, aes(survived,fill=sex)) +
 
 ```
 
+**Interprétation :** Parmi les décédés, les hommes sont très majoritaires, alors que parmi les survivants, les femmes sont plus nombreuses, bien qu’elles aient été moins nombreuses à bord. Ce graphique confirme le graphique 1.
+
+
 ```{r}
 ggplot(df, aes(passengerClass,fill=survived)) +
   geom_bar(position = "dodge",width = 0.3)+
   scale_fill_brewer(palette = "Blues")
 ```
 
+**Interprétation :** En 1re classe, les survivants sont plus nombreux que les décédés ; en 3e classe, les décédés sont environ trois fois plus nombreux que les survivants. Ce graphique confirme le graphique 2.
 
 ```{r}
 ggplot(df, aes(survived,age)) +
@@ -60,6 +72,7 @@ ggplot(df, aes(survived,age)) +
   theme_minimal()
 ```
 
+**Interprétation :** Comme dans le graphique 3, aucune différence d’âge nette n’apparaît entre survivants et non-survivants. L’avertissement indique que les 263 passagers sans âge ont été exclus.
 
 ```{r}
 y<-as.numeric(df$survived)-1
@@ -85,23 +98,15 @@ summary(glm(y~age+sex+passengerClass , data=df,family = binomial(link = "logit")
 Dans R/analyse_titanic.R, ajoute une fonction  pour calculer les taux de survie en fonction du sexe 
 
 ```{r}
-library(dplyr)
-taux_survie_sex <- function(data) {
-  data %>%
-    group_by(sex) %>%
-    summarize(TauxSurvie = sum(survived == "yes") / n())
-}
-taux_survie_sex(df)
+library(TintanicPackage)
 ```
+
+
 
 ```{r}
-taux_survie_class <- function(data) {
-  data %>%
-    group_by(passengerClass) %>%
-    summarize(TauxSurvie = sum(survived == "yes") / n())
-}
-taux_survie_class(df)
+taux_survie(df, "sex")
 ```
-
-
+```{r}
+taux_survie(df, "passengerClass")
+```
 
